@@ -2,8 +2,17 @@ from UGATIT import UGATIT
 import argparse
 from utils import *
 
-"""parsing and configuration"""
+import PIL
+from PIL import Image
 
+def resize_img(img_path):
+    img = Image.open(img_path)
+    img = img.resize((256, 256), PIL.Image.ANTIALIAS)
+    filename = img_path.split(".")[0]
+    img.save(filename+"_conv.jpg")
+
+
+"""parsing and configuration"""
 def parse_args():
     desc = "Tensorflow implementation of U-GAT-IT"
     parser = argparse.ArgumentParser(description=desc)
@@ -99,8 +108,18 @@ def main():
             print(" [*] Training finished!")
 
         if args.phase == 'test' :
-            gan.test()
+            # gan.test()
+            gan.test_single_img(sample_file="UGATIT/dataset/selfie2anime/testA/conv.JPG") #pass the img you want to convert
             print(" [*] Test finished!")
 
 if __name__ == '__main__':
     main()
+
+
+"""
+To run the proj:python main.py --dataset selfie2anime --phase test
+
+To test all the image: in main.py, uncomment: # gan.test()
+To test single image: in main.py,             gan.test_single_img()
+image gets saved in : UGATIT/results/UGATIT_selfie2anime_lsgan_4resblock_6dis_1_1_10_10_1000_sn_smoothing/ Folder
+"""

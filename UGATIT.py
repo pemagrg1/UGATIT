@@ -610,6 +610,21 @@ class UGATIT(object) :
         else:
             print(" [*] Failed to find a checkpoint")
             return False, 0
+    def test_single_img(self,sample_file):
+        self.saver = tf.train.Saver()
+        could_load, checkpoint_counter = self.load(self.checkpoint_dir)
+        self.result_dir = os.path.join(self.result_dir, self.model_dir)
+        check_folder(self.result_dir)
+        if could_load :
+            print(" [*] Load SUCCESS")
+        else :
+            print(" [!] Load failed...")
+        print('Processing A image: ' + sample_file)
+        sample_image = np.asarray(load_test_data(sample_file, size=self.img_size))
+        image_path = os.path.join(self.result_dir, '{0}'.format(os.path.basename(sample_file)))
+
+        fake_img = self.sess.run(self.test_fake_B, feed_dict={self.test_domain_A: sample_image})
+        save_images(fake_img, [1, 1], image_path)
 
     def test(self):
         tf.global_variables_initializer().run()
